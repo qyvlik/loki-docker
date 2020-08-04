@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+
+  openresty:
+    image: openresty/openresty:alpine
+    volumes:
+      - ./openresty/conf.d/:/etc/nginx/conf.d/
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - "${LOKI_OPENRESTY_AUTHBASIC}:/authbasic.txt:ro"
+      - "${LOKI_OPENRESTY_LOG_VOLUME}:/var/log/nginx"
+    ports:
+      - "${LOKI_OPENRESTY_PORT}:3300"
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:1.5.0
+    ports:
+      - "3100:3100"
+    volumes:
+      - "${LOKI_VOLUME}:/loki"
+      - "${LOKI_CONFIG}:/etc/loki/local-config.yaml"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - "${LOKI_GRAFANA_VOLUME}:/var/lib/grafana"
+    ports:
+      - "${LOKI_GRAFANA_PORT}:3000"
+
