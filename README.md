@@ -20,3 +20,35 @@ docker plugin install  grafana/loki-docker-driver:latest --alias loki --grant-al
 ```
 
 **Ignore the WARNING** : `WARNING: no logs are available with the 'loki' log driver`
+
+## loki storage
+
+https://rtfm.co.ua/en/grafana-labs-loki-using-aws-s3-as-a-data-storage-and-aws-dynamodb-for-indexes/
+
+```yaml
+schema_config:
+  configs:
+  - from: 0
+    store: dynamo
+    object_store: s3
+    schema: v9
+    index:
+      prefix: dynamodb_table_name
+      period: 0
+
+storage_config:
+  aws:
+    s3: s3://access_key:secret_access_key@region/bucket_name
+    dynamodbconfig:
+      dynamodb: dynamodb://access_key:secret_access_key@region
+```
+
+```yaml
+storage_config:
+  boltdb:
+    directory: /loki/index
+#  filesystem:
+#    directory: /tmp/loki/chunks
+  aws: 
+     s3: s3://AKI***PHA:0/W***WFN@eu-west-1/logger-loki-poc
+```
