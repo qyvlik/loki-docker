@@ -1,0 +1,49 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+ingester:
+  lifecycler:
+    address: 127.0.0.1
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+    final_sleep: 0s
+  chunk_idle_period: 5m
+  chunk_retain_period: 30s
+  max_transfer_retries: 0
+
+schema_config:
+  configs:
+  - from: 2018-04-15
+    store: aws
+    object_store: s3
+    schema: v11
+    index:
+      prefix: loki_index
+
+storage_config:
+  aws:
+    s3: s3://AKI***:Qj***@ap-northeast-1/yinheblock-loki
+    dynamodb:
+      dynamodb_url: dynamodb://AKI***:Qj***@ap-northeast-1
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
+chunk_store_config:
+  max_look_back_period: 0s
+
+table_manager:
+  index_tables_provisioning:
+    provisioned_write_throughput: 10
+    provisioned_read_throughput: 10
+  chunk_tables_provisioning:
+    provisioned_write_throughput: 10
+    provisioned_read_throughput: 10
+  retention_deletes_enabled: false
+  retention_period: 0s
